@@ -32,7 +32,7 @@
             <tr>
               <td>{{ todo_item["category"] }}</td>
               <td>{{ todo_item["title"] }}</td>
-              <td>{{ todo_item["content"] }}</td>
+              <td><a href="{{ url_for('show_detail', t_id=todo_item['id']) }}">{{ todo_item["content"] }}</a></td>
               <td>{{ todo_item["due_date"] }}</td>
               <td>{{ todo_item["status"] }}</td>
               <td><a href="{{ url_for('update_todo_done', t_id=todo_item['id']) }}" class="btn btn-success">完了</a></td>

@@ -50,10 +50,10 @@ def logout():
     session.clear()
     return redirect(url_for("show_login"))
 
-@app.route("/todo_apps/top/task/<t_id>")
+@app.route("/todo_apps/top/task/<int:t_id>")
 def update_todo_done(t_id):
     """ タスクを完了にする """
-    is_valid = business_logic.update_todo_status(int(t_id))
+    is_valid = business_logic.update_todo_status(t_id)
     if not is_valid:
         errors = ["更新に失敗しました。時間を空けて再度実行してください。"]
         # タスク一覧を取得
@@ -74,7 +74,7 @@ def create_todo():
     """ タスクを新規登録する """
     # 入力値検証
     error_dict = {}
-    is_valid = validate_views.validate_create_todo(request.form, error_dict)
+    is_valid = validate_views.validate_input_todo(request.form, error_dict)
     if not is_valid:
         # 入力エラーの場合
         categories = business_logic.get_category_all()
@@ -90,6 +90,66 @@ def create_todo():
         else:
             return redirect(url_for("top"))
 
+@app.route("/todo_apps/detail/<int:t_id>")
+def show_detail(t_id):
+    """ タスク詳細画面を表示する """
+    todo = business_logic.get_todo(t_id)
+    return render_template("detail.html", todo=todo)
+
+@app.route("/todo_apps/edit/<int:t_id>")
+def show_edit(t_id):
+    """ 編集画面を表示する """
+    categories = business_logic.get_category_all()
+    todo = business_logic.get_todo(t_id)
+    return render_template("edit.html", categories=categories, todo=todo)
+
+@app.route("/todo_apps/edit/done", methods=["POST"])
+def edit_todo():
+    """ タスクを編集する """
+    # 入力値検証
+    error_dict = {}
+    is_valid = validate_views.validate_input_todo(request.form, error_dict)
+    if not is_valid:
+        # 入力エラーの場合
+        categories = business_logic.get_category_all()
+        todo = get_todo(request.form)
+        return render_template("edit.html", categories=categories, error_dict=error_dict, todo=todo) 
+    else:
+        # タスク更新
+        is_valid = business_logic.update_todo(request.form)
+        if not is_valid:
+            # 入力エラーの場合
+            categories = business_logic.get_category_all()
+            error_msg = "タスクの更新に失敗しました。時間を空けて再度実行してください。"
+            todo = get_todo(request.form)
+            return render_template("create.html", categories=categories, error_msg=error_msg, todo=todo) 
+        else:
+            return redirect(url_for("top"))
+
+def get_todo(form):
+    """ タスク情報を返却する """
+    todo = {
+        "id": form.get("id"),
+        "title": form.get("title", ""),
+        "category_id": form.get("category", ""),
+        "content": form.get("content", ""),
+        "memo": form.get("memo", ""),
+        "due_date": form.get("due_date", "")
+    }
+
+    return todo
+
+@app.route("/todo_apps/delete/<int:t_id>")
+def delete_todo(t_id):
+    """ タスクを削除する """
+    is_valid = business_logic.delete_task(t_id)
+    if not is_valid:
+        # 削除エラーの場合
+        error_msg = "DBを更新中にエラーが発生しました。時間を空けて、再度ログインからやりなおしてください。"
+        return render_template("error.html", error_msg=error_msg)
+    else:
+        return redirect(url_for('top'))
+        
 
 if __name__ == '__main__':
     # 8080ポートで起動

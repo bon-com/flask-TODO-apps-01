@@ -13,8 +13,8 @@ def validate_login(form, errors):
 
     return is_valid
 
-def validate_create_todo(form, error_dict):
-    """ タスク新規登録の入力チェックを行う """
+def validate_input_todo(form, error_dict):
+    """ タスク登録または編集の入力チェックを行う """
     is_valid = True
     # カテゴリ 必須
     c_id = form.get("category")

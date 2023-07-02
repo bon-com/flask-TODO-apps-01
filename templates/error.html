@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>処理続行エラー</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+
+<body>
+  <div class="container mt-5 p-3 card border">
+    <h2 class="text-center">処理続行エラー</h2>
+    <div class="mt-4">
+      <div class="card-body">
+        <div class="p-2 mb-3 text-center">
+          <p>{{ error_msg }}</p>
+        </div>
+        <div class="d-flex justify-content-center mt-3">
+          <a href="{{ url_for('show_login') }}" class="btn btn-primary mb-3">ログイン</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

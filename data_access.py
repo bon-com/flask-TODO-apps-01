@@ -1,3 +1,4 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models import User, TodoCategory, Todo
@@ -6,7 +7,8 @@ import consts
 
 def get_session():
     """ セッション情報を返却 """
-    engine = create_engine('sqlite:///db/todo.db')
+    db_path = os.path.join('sqlite:///', 'db', 'todo.db')
+    engine = create_engine(db_path)
     Session = sessionmaker(bind=engine)
     session = Session()
 
@@ -72,4 +74,53 @@ def insert_todo(todo):
     finally:
         session.close()
 
+    return is_valid
+
+def get_todo(t_id):
+    """ タスク情報取得 """
+    session = get_session()
+    return session.get(Todo, t_id)
+
+def update_todo(todo_item):
+    """ タスクの更新 """
+    is_valid = True
+
+    session = get_session()
+    todo = session.get(Todo, todo_item["id"])
+    if not todo:
+        is_valid = False
+    else:
+        try:
+            todo.title = todo_item["title"]
+            todo.content = todo_item["content"]
+            todo.memo = todo_item["memo"]
+            todo.due_date = todo_item["due_date"]
+            todo.category_id = todo_item["category_id"]
+
+            session.add(todo)
+            session.commit()
+        except Exception as e:
+            print(e)
+            session.rollback()
+            is_valid = False
+        finally:
+            session.close()
+
+    return is_valid
+
+def delete_task(t_id):
+    """ タスクの削除 """
+    is_valid = True
+
+    session = get_session()
+    try:
+        session.query(Todo).filter_by(id=t_id).delete()
+        session.commit()
+    except Exception as e:
+        print(e)
+        session.rollback()
+        is_valid = False
+    finally:
+        session.close()
+    
     return is_valid

@@ -46,3 +46,36 @@ def insert_todo(form, u_id):
     }
 
     return data_access.insert_todo(todo)
+
+def get_todo(t_id):
+    """ タスク情報取得 """
+    todo = data_access.get_todo(t_id)
+    todo_item = {
+        "id": todo.id,
+        "title": todo.title,
+        "category_id": str(todo.category.id),
+        "category": todo.category.category_name,
+        "content": todo.content,
+        "memo": todo.memo,
+        "due_date": f"{todo.due_date:%Y-%m-%d}",
+        "status": "未完了" if todo.status == consts.STATUS_INCOMPLETE else "完了"
+    }
+
+    return todo_item
+
+def update_todo(form):
+    """ タスクの更新 """    
+    todo_item = {
+        "id": form.get("id"),
+        "title": form.get("title"),
+        "content": form.get("content"),
+        "memo": form.get("memo", ""),
+        "due_date": datetime.strptime(form.get("due_date"), consts.DATE_FORMAT),
+        "category_id": int(form.get("category"))
+    }
+
+    return data_access.update_todo(todo_item)
+
+def delete_task(t_id):
+    """ タスクの削除 """
+    return data_access.delete_task(t_id)
