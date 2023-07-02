@@ -32,7 +32,7 @@ class Todo(Base):
     content = Column(String, nullable=False)
     memo = Column(Text)
     status = Column(Integer, default=0)
-    due_date = Column(DateTime)
+    due_date = Column(DateTime, nullable=False)
     category_id = Column(Integer, ForeignKey('todo_category.id')) 
     user_id = Column(Integer, ForeignKey('user.id')) 
     # リレーションプロパティ

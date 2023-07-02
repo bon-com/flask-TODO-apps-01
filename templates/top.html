@@ -1,45 +1,48 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>TODOトップ</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+  <title>TODOトップ</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
 </head>
+
 <body>
-    <div class="container mt-5">
-        <h2 class="text-center">{{ session["name"] }} さんのタスク一覧</h2>
-        <a href="{{ url_for('show_create') }}" class="btn btn-primary mr-3">タスク登録</a>
-        <a href="{{ url_for('logout') }}" class="btn btn-primary">ログアウト</a>
-        <div class="card mt-4">
-            <div class="card-body">
-                {% for msg in errors %}
-                <div id="error-message" class="text-danger mb-3">{{ msg }}</div>
-                {% endfor %}
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>カテゴリ</th>
-                            <th>タイトル</th>
-                            <th>タスク名</th>
-                            <th>期日</th>
-                            <th>ステータス</th>
-                            <th>アクション</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for todo_item in todos %}
-                        <tr>
-                            <td>{{ todo_item["category"] }}</td>
-                            <td>{{ todo_item["title"] }}</td>
-                            <td>{{ todo_item["content"] }}</td>
-                            <td>{{ todo_item["due_date"] }}</td>
-                            <td>{{ todo_item["status"] }}</td>
-                            <td><a href="{{ url_for('update_todo_done', t_id=todo_item['id']) }}" class="btn btn-success">完了</a></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+  <div class="container mt-5">
+    <h2 class="text-center">{{ session["name"] }} さんのタスク一覧</h2>
+    <a href="{{ url_for('show_create') }}" class="btn btn-primary mr-3">タスク登録</a>
+    <a href="{{ url_for('logout') }}" class="btn btn-primary">ログアウト</a>
+    <div class="card mt-4">
+      <div class="card-body">
+        {% for msg in errors %}
+        <div id="error-message" class="text-danger mb-3">{{ msg }}</div>
+        {% endfor %}
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>カテゴリ</th>
+              <th>タイトル</th>
+              <th>タスク名</th>
+              <th>期日</th>
+              <th>ステータス</th>
+              <th>アクション</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for todo_item in todos %}
+            <tr>
+              <td>{{ todo_item["category"] }}</td>
+              <td>{{ todo_item["title"] }}</td>
+              <td>{{ todo_item["content"] }}</td>
+              <td>{{ todo_item["due_date"] }}</td>
+              <td>{{ todo_item["status"] }}</td>
+              <td><a href="{{ url_for('update_todo_done', t_id=todo_item['id']) }}" class="btn btn-success">完了</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
 </body>
+
 </html>
