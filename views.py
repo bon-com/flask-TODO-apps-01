@@ -124,7 +124,7 @@ def edit_todo():
             todo = get_todo(request.form)
             return render_template("edit.html", categories=categories, error_msg=error_msg, todo=todo) 
         else:
-            return redirect(url_for("top"))
+            return redirect(url_for("show_detail", t_id=request.form["id"]))
 
 def get_todo(form):
     """ タスク情報を返却する """
