@@ -122,7 +122,7 @@ def edit_todo():
             categories = business_logic.get_category_all()
             error_msg = "タスクの更新に失敗しました。時間を空けて再度実行してください。"
             todo = get_todo(request.form)
-            return render_template("create.html", categories=categories, error_msg=error_msg, todo=todo) 
+            return render_template("edit.html", categories=categories, error_msg=error_msg, todo=todo) 
         else:
             return redirect(url_for("top"))
 
