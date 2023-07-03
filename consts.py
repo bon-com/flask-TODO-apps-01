@@ -5,3 +5,6 @@ STATUS_COMPLETE = 1
 
 # 日付変換フォーマット
 DATE_FORMAT = "%Y-%m-%d"
+
+# エラー画面フラグ
+DB_ERROR = "1"

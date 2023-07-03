@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import business_logic
-import validate_views 
+import validate_views
+import consts
 
 app = Flask(__name__)
 app.secret_key = "yiYKQmFC6MTVKs5THpKkD"
@@ -145,11 +146,21 @@ def delete_todo(t_id):
     is_valid = business_logic.delete_task(t_id)
     if not is_valid:
         # 削除エラーの場合
-        error_msg = "DBを更新中にエラーが発生しました。時間を空けて、再度ログインからやりなおしてください。"
-        return render_template("error.html", error_msg=error_msg)
+        return redirect(url_for("show_error", error_id=consts.DB_ERROR))
     else:
         return redirect(url_for('top'))
-        
+
+@app.route("/todo_apps/error")
+def show_error():
+    session.clear()
+    error_id = request.args.get("error_id", "")
+    if error_id == consts.DB_ERROR:
+        # DBエラーの場合
+        error_msg = "DBを更新中にエラーが発生しました。時間を空けて、再度ログインからやりなおしてください。"
+    else:
+        error_msg = "エラーが発生しました。時間を空けて、再度ログインからやりなおしてください。"
+    
+    return render_template("error.html", error_msg=error_msg)
 
 if __name__ == '__main__':
     # 8080ポートで起動
