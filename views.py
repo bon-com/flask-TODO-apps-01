@@ -42,7 +42,6 @@ def top():
     """ TODOタスク一覧画面表示 """
     # タスク一覧を取得
     todos = business_logic.find_todo_all(session["u_id"])
-
     return render_template("top.html", todos=todos)
 
 @app.route("/logout")
@@ -84,7 +83,7 @@ def create_todo():
         # タスク登録
         is_valid = business_logic.insert_todo(request.form, session["u_id"])
         if not is_valid:
-            # 入力エラーの場合
+            # DBエラーの場合
             categories = business_logic.get_category_all()
             error_msg = "タスクの登録に失敗しました。時間を空けて再度実行してください。"
             return render_template("create.html", categories=categories, error_msg=error_msg) 
@@ -119,13 +118,36 @@ def edit_todo():
         # タスク更新
         is_valid = business_logic.update_todo(request.form)
         if not is_valid:
-            # 入力エラーの場合
+            # DBエラーの場合
             categories = business_logic.get_category_all()
             error_msg = "タスクの更新に失敗しました。時間を空けて再度実行してください。"
             todo = get_todo(request.form)
             return render_template("edit.html", categories=categories, error_msg=error_msg, todo=todo) 
         else:
             return redirect(url_for("show_detail", t_id=request.form["id"]))
+
+@app.route("/todo_apps/delete/<int:t_id>")
+def delete_todo(t_id):
+    """ タスクを削除する """
+    is_valid = business_logic.delete_task(t_id)
+    if not is_valid:
+        # 削除エラーの場合
+        return redirect(url_for("show_error", error_id=consts.DB_ERROR))
+    else:
+        return redirect(url_for('top'))
+
+@app.route("/todo_apps/error")
+def show_error():
+    """ エラー画面を表示する """
+    session.clear()
+    error_id = request.args.get("error_id", "")
+    if error_id == consts.DB_ERROR:
+        # DBエラーの場合
+        error_msg = "DBを更新中にエラーが発生しました。時間を空けて、再度ログインからやりなおしてください。"
+    else:
+        error_msg = "エラーが発生しました。時間を空けて、再度ログインからやりなおしてください。"
+    
+    return render_template("error.html", error_msg=error_msg)
 
 def get_todo(form):
     """ タスク情報を返却する """
@@ -140,27 +162,6 @@ def get_todo(form):
 
     return todo
 
-@app.route("/todo_apps/delete/<int:t_id>")
-def delete_todo(t_id):
-    """ タスクを削除する """
-    is_valid = business_logic.delete_task(t_id)
-    if not is_valid:
-        # 削除エラーの場合
-        return redirect(url_for("show_error", error_id=consts.DB_ERROR))
-    else:
-        return redirect(url_for('top'))
-
-@app.route("/todo_apps/error")
-def show_error():
-    session.clear()
-    error_id = request.args.get("error_id", "")
-    if error_id == consts.DB_ERROR:
-        # DBエラーの場合
-        error_msg = "DBを更新中にエラーが発生しました。時間を空けて、再度ログインからやりなおしてください。"
-    else:
-        error_msg = "エラーが発生しました。時間を空けて、再度ログインからやりなおしてください。"
-    
-    return render_template("error.html", error_msg=error_msg)
 
 if __name__ == '__main__':
     # 8080ポートで起動
