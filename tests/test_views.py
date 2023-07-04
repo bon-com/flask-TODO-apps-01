@@ -19,9 +19,6 @@ class TestViews(unittest.TestCase):
         # flaskをテストモードで実行する
         # エラーが発生すると、即座に例外をスローする
         self.app.testing = True
-        # セッションIDの登録
-        with self.app.session_transaction() as session:
-            session["u_id"] = 5
 
     def test_index_route(self):
         """ indexメソッドのリダイレクト先確認 """
@@ -34,7 +31,7 @@ class TestViews(unittest.TestCase):
     def test_index_route_redirect(self):
         """ indexメソッドのリダイレクト確認 """
         # リクエスト
-        res = self.app.get("/", follow_redirects=False)
+        res = self.app.get("/")
         # 結果確認
         self.assertEqual(res.status_code, HTTPStatus.FOUND)
 
@@ -81,6 +78,9 @@ class TestViews(unittest.TestCase):
         """ TODOトップ画面表示確認 """
         # モック定義
         mock_find_todo_all.return_value = [{"id": 1, "title": "テスト用タスクタイトル", "content": "タスク内容", "category": "カテゴリ名","status": "未完了", "due_date": "2023-07-03"}]
+        with self.app.session_transaction() as session:
+            session["u_id"] = 5
+
         # リクエスト
         res = self.app.get("/todo_apps/top")
         # 結果確認
@@ -99,6 +99,10 @@ class TestViews(unittest.TestCase):
 
     def test_update_todo_done_failure(self):
         """ タスク完了更新の失敗確認 """
+        # モック定義
+        with self.app.session_transaction() as session:
+            session["u_id"] = 1
+
         # ありえないタスクID
         t_id = 9999
         # リクエスト
@@ -170,6 +174,9 @@ class TestViews(unittest.TestCase):
         mock_get_category_all.return_value = categories
         mock_validate_input_todo.return_value = True
         mock_insert_todo.return_value = False
+        with self.app.session_transaction() as session:
+            session["u_id"] = 5
+
         # POSTデータ
         post_data = ""
         # リクエスト
@@ -188,6 +195,9 @@ class TestViews(unittest.TestCase):
         # モック定義
         mock_validate_input_todo.return_value = True
         mock_insert_todo.return_value = True
+        with self.app.session_transaction() as session:
+            session["u_id"] = 5
+
         # POSTデータ
         post_data = ""
         # リクエスト
