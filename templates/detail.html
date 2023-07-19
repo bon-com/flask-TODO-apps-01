@@ -1,54 +1,70 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
+{% block title %}TODO詳細{% endblock %}
 
-<head>
-  <title>TODO詳細</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
-</head>
-
-<body>
-  <div class="container mt-2">
-    <a href="{{ url_for('top') }}" class="btn btn-primary mb-3">戻る</a>
-    <h2 class="text-center">TODO詳細</h2>
-    <div class="card mt-4 border">
-      <div class="card-body">
-        <div class="row border p-2 mb-2">
-          <div class="col-sm-3"><h5>カテゴリ：</h5></div>
-          <div class="col-sm-9"><p>{{ todo["category"] }}</p></div>
+{% block main %}
+<div class="container mt-2">
+  <a href="{{ url_for('top') }}" class="btn btn-primary mb-3">戻る</a>
+  <h2 class="text-center">TODO詳細</h2>
+  <div class="card mt-4 border">
+    <div class="card-body">
+      <div class="row border p-2 mb-2">
+        <div class="col-sm-3">
+          <h5>カテゴリ：</h5>
         </div>
-        <div class="row border p-2 mb-2">
-          <div class="col-sm-3"><h5>タイトル：</h5></div>
-          <div class="col-sm-9"><p>{{ todo["title"] }}</p></div>
+        <div class="col-sm-9">
+          <p>{{ todo["category"] }}</p>
         </div>
-        <div class="row border p-2 mb-2">
-          <div class="col-sm-3"><h5>タスク内容：</h5></div>
-          <div class="col-sm-9"><p>{{ todo["content"] }}</p></div>
+      </div>
+      <div class="row border p-2 mb-2">
+        <div class="col-sm-3">
+          <h5>タイトル：</h5>
         </div>
-        <div class="row border p-2 mb-2">
-          <div class="col-sm-3"><h5>ステータス：</h5></div>
-          <div class="col-sm-9"><p>{{ todo["status"] }}</p></div>
+        <div class="col-sm-9">
+          <p>{{ todo["title"] }}</p>
         </div>
-        <div class="row border p-2 mb-2">
-          <div class="col-sm-3"><h5>メモ：</h5></div>
-          <div class="col-sm-9">
-            {% if todo["memo"] %}
-            <p>{{ todo["memo"].replace("\r\n", "<br>") | safe }}</p>
-            {% else %}
-            <p></p>
-            {% endif %}
-          </div>
+      </div>
+      <div class="row border p-2 mb-2">
+        <div class="col-sm-3">
+          <h5>タスク内容：</h5>
         </div>
-        <div class="row border p-2 mb-2">
-          <div class="col-sm-3"><h5>期日：</h5></div>
-          <div class="col-sm-9"><p>{{ todo["due_date"] }}</p></div>
+        <div class="col-sm-9">
+          <p>{{ todo["content"] }}</p>
         </div>
-        <div class="d-flex justify-content-center mt-2">
-          <a href="{{ url_for('show_edit', t_id=todo['id']) }}" class="btn btn-primary mb-3 mr-2">編集する</a>
-          <a href="{{ url_for('delete_todo', t_id=todo['id']) }}" class="btn btn-danger mb-3">削除する</a>
+      </div>
+      <div class="row border p-2 mb-2">
+        <div class="col-sm-3">
+          <h5>ステータス：</h5>
         </div>
+        <div class="col-sm-9">
+          <p>{{ todo["status"] }}</p>
+        </div>
+      </div>
+      <div class="row border p-2 mb-2">
+        <div class="col-sm-3">
+          <h5>メモ：</h5>
+        </div>
+        <div class="col-sm-9">
+          {% if todo["memo"] %}
+          <p>{{ todo["memo"].replace("\r\n", "<br>") | safe }}</p>
+          {% else %}
+          <p></p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="row border p-2 mb-2">
+        <div class="col-sm-3">
+          <h5>期日：</h5>
+        </div>
+        <div class="col-sm-9">
+          <p>{{ todo["due_date"] }}</p>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center mt-2">
+        <a href="{{ url_for('show_edit', t_id=todo['id']) }}" class="btn btn-primary mb-3 mr-2">編集する</a>
+        <a href="{{ url_for('delete_todo', t_id=todo['id']) }}" class="btn btn-danger mb-3">削除する</a>
       </div>
     </div>
   </div>
-</body>
-
-</html>
+</div>
+</div>
+{% endblock %}

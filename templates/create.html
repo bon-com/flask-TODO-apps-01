@@ -1,72 +1,61 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
+{% block title %}タスク登録{% endblock %}
 
-<head>
-  <title>タスク登録</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
-</head>
-
-<body>
-  <div class="container">
-    <div class="row justify-content-center mt-3">
-      <div class="col-md-8">
-        <a href="{{ url_for('top') }}" class="btn btn-primary mb-3">戻る</a>
-        <div class="card">
-          <div class="card-header text-center">
-            <h4>タスク登録</h4>
-          </div>
-          <div class="card-body">
-            <div id="error-message" class="text-danger mb-3">{{ error_msg }}</div>
-            <form method="post" action="{{ url_for('create_todo') }}">
-              <div class="form-group">
-                <label for="category">カテゴリ<span class="text-primary ml-3">※必須</span></label>
-                <select class="form-control" id="category" name="category">
-                  <option value="">選択してください</option>
-                  {% for category in categories %}
-                  <option value="{{category.id}}" 
-                  {% if category.id|string()==request.form.get('category') %} selected {% endif %}>{{category.category_name}}</option>
-                  {% endfor %}
-                </select>
-              </div>
-              {% if error_dict and error_dict["category"] %}
-              <div id="error-message" class="text-danger mb-3">{{ error_dict["category"] }}</div>
-              {% endif %}
-              <div class="form-group mt-3">
-                <label for="title">タイトル <span class="text-primary ml-3">※必須</span></label>
-                <input type="text" class="form-control" id="title" name="title"
-                  value="{{ request.form.get('title', '') }}">
-              </div>
-              {% if error_dict and error_dict["title"] %}
-              <div id="error-message" class="text-danger mb-3">{{ error_dict["title"] }}</div>
-              {% endif %}
-              <div class="form-group mt-3">
-                <label for="task">タスク内容 <span class="text-primary ml-3">※必須</span></label>
-                <input type="text" class="form-control" id="content" name="content"
-                  value="{{ request.form.get('content', '') }}">
-              </div>
-              {% if error_dict and error_dict["content"] %}
-              <div id="error-message" class="text-danger mb-3">{{ error_dict["content"] }}</div>
-              {% endif %}
-              <div class="form-group mt-3">
-                <label for="memo">メモ</label>
-                <textarea class="form-control" id="memo" name="memo"
-                  rows="3">{{ request.form.get('memo', '') }}</textarea>
-              </div>
-              <div class="form-group mt-3">
-                <label for="due_date">タスク期日<span class="text-primary ml-3">※必須</span></label>
-                <input type="date" class="form-control" id="due_date" name="due_date"
-                  value="{{ request.form.get('due_date', '') }}">
-              </div>
-              {% if error_dict and error_dict["due_date"] %}
-              <div id="error-message" class="text-danger mb-3">{{ error_dict["due_date"] }}</div>
-              {% endif %}
-              <button type="submit" class="btn btn-primary mt-3">登録</button>
-            </form>
-          </div>
+{% block main %}
+<div class="container">
+  <div class="row justify-content-center mt-3">
+    <div class="col-md-8">
+      <a href="{{ url_for('top') }}" class="btn btn-primary mb-3">戻る</a>
+      <div class="card">
+        <div class="card-header text-center">
+          <h4>タスク登録</h4>
+        </div>
+        <div class="card-body">
+          <div id="error-message" class="text-danger mb-3">{{ error_msg }}</div>
+          <form method="post" action="{{ url_for('create_todo') }}">
+            <div class="form-group">
+              <label for="category">カテゴリ<span class="text-primary ml-3">※必須</span></label>
+              <select class="form-control" id="category" name="category">
+                <option value="">選択してください</option>
+                {% for category in categories %}
+                <option value="{{category.id}}" {% if category.id|string()==request.form.get('category') %} selected {%
+                  endif %}>{{category.category_name}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div id="category-error" class="text-danger mb-3 error-msg"></div>
+            <div class="form-group mt-3">
+              <label for="title">タイトル <span class="text-primary ml-3">※必須</span></label>
+              <input type="text" class="form-control" id="title" name="title"
+                value="{{ request.form.get('title', '') }}">
+            </div>
+            <div id="title-error" class="text-danger mb-3 error-msg"></div>
+            <div class="form-group mt-3">
+              <label for="task">タスク内容 <span class="text-primary ml-3">※必須</span></label>
+              <input type="text" class="form-control" id="content" name="content"
+                value="{{ request.form.get('content', '') }}">
+            </div>
+            <div id="content-error" class="text-danger mb-3 error-msg"></div>
+            <div class="form-group mt-3">
+              <label for="memo">メモ</label>
+              <textarea class="form-control" id="memo" name="memo"
+                rows="3">{{ request.form.get('memo', '') }}</textarea>
+            </div>
+            <div class="form-group mt-3">
+              <label for="due_date">タスク期日<span class="text-primary ml-3">※必須</span></label>
+              <input type="date" class="form-control" id="due_date" name="due_date"
+                value="{{ request.form.get('due_date', '') }}">
+            </div>
+            <div id="due_date-error" class="text-danger mb-3 error-msg"></div>
+            <button type="submit" id="regist" class="btn btn-primary mt-3">登録</button>
+          </form>
         </div>
       </div>
     </div>
   </div>
-</body>
+</div>
+{% endblock %}
 
-</html>
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/create.js') }}"></script>
+{% endblock %}

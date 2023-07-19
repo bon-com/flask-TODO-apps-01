@@ -7,4 +7,7 @@ STATUS_COMPLETE = 1
 DATE_FORMAT = "%Y-%m-%d"
 
 # エラー画面フラグ
+# DBエラー
 DB_ERROR = "1"
+# 改ざんエラー
+KAIZAN_ERROR = "2"

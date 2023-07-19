@@ -72,23 +72,22 @@ def show_create():
 @app.route("/todo_apps/create_todo", methods=["POST"])
 def create_todo():
     """ タスクを新規登録する """
-    # 入力値検証
-    error_dict = {}
-    is_valid = validate_views.validate_input_todo(request.form, error_dict)
+    try:
+        # 入力値検証
+        validate_views.validate_input_todo(request.form)
+    except ValueError:
+        # 改ざんエラー
+        return redirect(url_for("show_error", error_id=consts.KAIZAN_ERROR))
+
+    # タスク登録
+    is_valid = business_logic.insert_todo(request.form, session["u_id"])
     if not is_valid:
-        # 入力エラーの場合
+        # DBエラーの場合
         categories = business_logic.get_category_all()
-        return render_template("create.html", categories=categories, error_dict=error_dict) 
+        error_msg = "タスクの登録に失敗しました。時間を空けて再度実行してください。"
+        return render_template("create.html", categories=categories, error_msg=error_msg) 
     else:
-        # タスク登録
-        is_valid = business_logic.insert_todo(request.form, session["u_id"])
-        if not is_valid:
-            # DBエラーの場合
-            categories = business_logic.get_category_all()
-            error_msg = "タスクの登録に失敗しました。時間を空けて再度実行してください。"
-            return render_template("create.html", categories=categories, error_msg=error_msg) 
-        else:
-            return redirect(url_for("top"))
+        return redirect(url_for("top"))
 
 @app.route("/todo_apps/detail/<int:t_id>")
 def show_detail(t_id):
@@ -106,25 +105,23 @@ def show_edit(t_id):
 @app.route("/todo_apps/edit/done", methods=["POST"])
 def edit_todo():
     """ タスクを編集する """
-    # 入力値検証
-    error_dict = {}
-    is_valid = validate_views.validate_input_todo(request.form, error_dict)
+    try:
+        # 入力値検証
+        validate_views.validate_input_todo(request.form)
+    except ValueError:
+        # 改ざんエラー
+        return redirect(url_for("show_error", error_id=consts.KAIZAN_ERROR))
+
+    # タスク更新
+    is_valid = business_logic.update_todo(request.form)
     if not is_valid:
-        # 入力エラーの場合
+        # DBエラーの場合
         categories = business_logic.get_category_all()
+        error_msg = "タスクの更新に失敗しました。時間を空けて再度実行してください。"
         todo = get_todo(request.form)
-        return render_template("edit.html", categories=categories, error_dict=error_dict, todo=todo) 
+        return render_template("edit.html", categories=categories, error_msg=error_msg, todo=todo) 
     else:
-        # タスク更新
-        is_valid = business_logic.update_todo(request.form)
-        if not is_valid:
-            # DBエラーの場合
-            categories = business_logic.get_category_all()
-            error_msg = "タスクの更新に失敗しました。時間を空けて再度実行してください。"
-            todo = get_todo(request.form)
-            return render_template("edit.html", categories=categories, error_msg=error_msg, todo=todo) 
-        else:
-            return redirect(url_for("show_detail", t_id=request.form["id"]))
+        return redirect(url_for("show_detail", t_id=request.form["id"]))
 
 @app.route("/todo_apps/delete/<int:t_id>")
 def delete_todo(t_id):
@@ -144,6 +141,9 @@ def show_error():
     if error_id == consts.DB_ERROR:
         # DBエラーの場合
         error_msg = "DBを更新中にエラーが発生しました。時間を空けて、再度ログインからやりなおしてください。"
+    elif error_id == consts.KAIZAN_ERROR:
+        # 改ざんエラーの場合
+        error_msg = "改ざんされた可能性があります。再度ログインからやりなおしてください。"
     else:
         error_msg = "エラーが発生しました。時間を空けて、再度ログインからやりなおしてください。"
     
