@@ -60,11 +60,18 @@
         </div>
       </div>
       <div class="d-flex justify-content-center mt-2">
-        <a href="{{ url_for('show_edit', t_id=todo['id']) }}" class="btn btn-primary mb-3 mr-2">編集する</a>
-        <a href="{{ url_for('delete_todo', t_id=todo['id']) }}" class="btn btn-danger mb-3">削除する</a>
+        <a href="{{ url_for('show_edit', t_id=todo['id']) }}" class="btn btn-primary mb-3 me-3">編集する</a>
+        <a href="{{ url_for('delete_todo', t_id=todo['id']) }}" id="deleteTask" class="btn btn-danger mb-3">削除する</a>
       </div>
     </div>
   </div>
 </div>
-</div>
+
+<!-- モーダルエリア -->
+{% include 'components/confirm_modal.html' %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/detail.js') }}"></script>
 {% endblock %}

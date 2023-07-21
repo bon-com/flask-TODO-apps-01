@@ -4,8 +4,8 @@
 {% block main %}
 <div class="container mt-5">
   <h2 class="text-center">{{ session["name"] }} さんのタスク一覧</h2>
-  <a href="{{ url_for('show_create') }}" class="btn btn-primary mr-3">タスク登録</a>
-  <a href="{{ url_for('logout') }}" class="btn btn-primary">ログアウト</a>
+  <a href="{{ url_for('show_create') }}" class="btn btn-primary me-3">タスク登録</a>
+  <a href="{{ url_for('logout') }}" id="logout" class="btn btn-primary">ログアウト</a>
   <div class="card mt-4">
     <div class="card-body">
       {% for msg in errors %}
@@ -38,4 +38,12 @@
     </div>
   </div>
 </div>
+
+<!-- モーダルエリア -->
+{% include 'components/confirm_modal.html' %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/top.js') }}"></script>
 {% endblock %}
